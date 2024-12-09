@@ -15,11 +15,12 @@ npm install @epic-web/app-launcher
 ```ts
 // remix.launcher.ts
 import { defineLauncher, getRandomPort } from '@epic-web/app-launcher'
+import { getPort } from 'get-port'
 
 export const launcher = defineLauncher({
   async context() {
     return {
-      port: await getRandomPort(),
+      port: await getPort(),
     }
   },
   env({ context }) {
@@ -68,8 +69,6 @@ export const launcher = defineLauncher({
 ## API
 
 ### `defineLauncher()`
-
-### `getRandomPort()`
 
 ### `waitForPort(port: number)`
 
