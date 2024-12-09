@@ -67,7 +67,7 @@ export interface DefineLauncherOptions<Context> {
     context: Context
     env: Record<string, string>
     appProcess: ChildProcessWithoutNullStreams
-  }) => Promise<string | URL>
+  }) => string | URL | Promise<string | URL>
 }
 
 export interface Launcher {
