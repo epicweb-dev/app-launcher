@@ -33,7 +33,7 @@ npm install @epic-web/app-launcher
 ```ts
 // remix.launcher.ts
 import { defineLauncher } from '@epic-web/app-launcher'
-import { getPort } from 'get-port'
+import getPort from 'get-port'
 
 export const launcher = defineLauncher({
   async context() {
