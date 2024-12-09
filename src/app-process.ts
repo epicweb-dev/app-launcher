@@ -1,4 +1,4 @@
-import { type ChildProcessWithoutNullStreams, spawn } from 'node:child_process'
+import { type ChildProcess, spawn } from 'node:child_process'
 import { DeferredPromise } from '@open-draft/deferred-promise'
 import { invariant } from '@epic-web/invariant'
 
@@ -11,7 +11,7 @@ export interface AppProcessOptions {
 export const kUrl = Symbol('kUrl')
 
 export class AppProcess {
-  private io?: ChildProcessWithoutNullStreams
+  private io?: ChildProcess
   private controller: AbortController
   private [kUrl]?: URL
 
@@ -30,7 +30,7 @@ export class AppProcess {
     return url
   }
 
-  public async launch(): Promise<ChildProcessWithoutNullStreams> {
+  public async launch(): Promise<ChildProcess> {
     const [command, ...args] = this.options.command.split(' ')
 
     invariant(

@@ -1,4 +1,4 @@
-import type { ChildProcessWithoutNullStreams } from 'node:child_process'
+import type { ChildProcess } from 'node:child_process'
 import { AppProcess, kUrl } from './app-process.js'
 import { waitForPort } from './wait-for-port.js'
 
@@ -9,6 +9,11 @@ export interface DefineLauncherOptions<Context> {
    * will be inherited by the new launcher.
    */
   extends?: Launcher
+
+  /**
+   * Run the launcher in debug mode.
+   */
+  debug?: boolean
 
   /**
    * Define a context object exposed to the other launcher methods.
@@ -66,7 +71,7 @@ export interface DefineLauncherOptions<Context> {
   url: (options: {
     context: Context
     env: Record<string, string>
-    appProcess: ChildProcessWithoutNullStreams
+    appProcess: ChildProcess
   }) => string | URL | Promise<string | URL>
 }
 
@@ -107,6 +112,11 @@ export function defineLauncher<Context>(
         cwd: runOptions?.cwd,
       })
       const childProcess = await app.launch()
+
+      if (options?.debug) {
+        childProcess.stdout?.pipe(process.stdout)
+        childProcess.stderr?.pipe(process.stderr)
+      }
 
       // Wait for the provided application URL to be up.
       const url = await options.url({
