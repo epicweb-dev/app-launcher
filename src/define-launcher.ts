@@ -73,7 +73,7 @@ export interface DefineLauncherOptions<Context> {
 export interface Launcher {
   [kLauncherOptions]: DefineLauncherOptions<any>
 
-  run(runOptions: RunOptions): Promise<AppProcess>
+  run: (runOptions?: RunOptions) => Promise<AppProcess>
 }
 
 export interface RunOptions {
