@@ -70,6 +70,29 @@ export const launcher = defineLauncher({
 
 ### `defineLauncher()`
 
-### `waitForPort(port: number)`
+### `waitForPort(port: number[, options])`
 
-- Returns `Promise<void>` that resolves when the given port ...
+- `port` `<number>` A port number to await.
+- `options` `<Object>`
+  - `timeout` `<number>`
+  - `retryInterval` `<number>`
+  - `maxRetries` `<number>`
+- Returns: `<Promise>`
+
+Returns a Promise that resolves whenever a process starts running at the given port.
+
+```ts
+import { defineLauncher, waitForPort } from '@epic-web/app-launcher'
+import { getPort } from 'get-port'
+
+const laundher = defineLauncher({
+  async context() {
+    return {
+      port: await getPort(),
+    }
+  },
+  async ready({ context }) {
+    await waitForPort(context.port)
+  },
+})
+```
