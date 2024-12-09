@@ -1,3 +1,7 @@
-export * from './define-launcher.js'
-export * from './app-process.js'
-export * from './wait-for-port.js'
+export {
+  defineLauncher,
+  type DefineLauncherOptions,
+  type Launcher,
+} from './define-launcher.js'
+export { AppProcess, type AppProcessOptions } from './app-process.js'
+export { waitForPort } from './wait-for-port.js'

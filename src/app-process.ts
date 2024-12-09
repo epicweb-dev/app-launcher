@@ -2,22 +2,31 @@ import { type ChildProcessWithoutNullStreams, spawn } from 'node:child_process'
 import { DeferredPromise } from '@open-draft/deferred-promise'
 import { invariant } from '@epic-web/invariant'
 
-export interface ProcessWrapOptions {
+export interface AppProcessOptions {
   command: string
   env?: Record<string, string>
   cwd?: string
 }
 
+export const kUrl = Symbol('kUrl')
+
 export class AppProcess {
   private io?: ChildProcessWithoutNullStreams
   private controller: AbortController
+  private [kUrl]?: URL
 
-  constructor(protected readonly options: ProcessWrapOptions) {
+  constructor(protected readonly options: AppProcessOptions) {
     this.controller = new AbortController()
   }
 
   get url(): URL {
-    const url = new URL('http://localhost')
+    const url = this[kUrl]
+
+    invariant(
+      url != null,
+      'Failed to get a URL of the launched application: application not running. Did you forget to call `await launcher.run()`?',
+    )
+
     return url
   }
 

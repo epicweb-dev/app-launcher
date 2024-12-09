@@ -49,8 +49,8 @@ export const launcher = defineLauncher({
   command() {
     return `npm start`
   },
-  async ready({ context }) {
-    await waitForPort(context.port)
+  url({ context }) {
+    return `http://localhost:${context.port}`
   },
 })
 ```
@@ -101,7 +101,7 @@ Extending an existing launcher will inherit the following of its properties:
   - `context` `<Function>` A function that returns the context object. The context object is later shared across the other options.
   - `env` `<Function>` A function that returns an object representing environment variables to add to the spawned application process.
   - `command` `<Function>` A function that returns a string indicating the CLI command to run the application (e.g. `npm start`).
-  - `ready` `<Function>` A function that must return a promise that resolves when the application is considered launched (e.g. wait for a process to be established on a certain port).
+  - `url` `<Function>` A function that returns the resolved application URL. You can compose the URL based on your `context` or wait for the `appProcess` stdout/stderr to print that URL, then return it.
 
 ### `waitForPort(port[, options])`
 
@@ -113,22 +113,6 @@ Extending an existing launcher will inherit the following of its properties:
 - Returns: `<Promise>`
 
 Returns a promise that resolves whenever a process starts running at the given port.
-
-```ts
-import { defineLauncher, waitForPort } from '@epic-web/app-launcher'
-import { getPort } from 'get-port'
-
-const laundher = defineLauncher({
-  async context() {
-    return {
-      port: await getPort(),
-    }
-  },
-  async ready({ context }) {
-    await waitForPort(context.port)
-  },
-})
-```
 
 ## License
 

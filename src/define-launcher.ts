@@ -1,5 +1,6 @@
 import type { ChildProcessWithoutNullStreams } from 'node:child_process'
-import { AppProcess } from './app-process.js'
+import { AppProcess, kUrl } from './app-process.js'
+import { waitForPort } from './wait-for-port.js'
 
 export interface DefineLauncherOptions<Context> {
   /**
@@ -53,20 +54,20 @@ export interface DefineLauncherOptions<Context> {
   }) => string | Promise<string>
 
   /**
-   * Return a promise that resolves when your application is ready.
+   * Return the resolved application URL.
    *
    * @example
    * defineLauncher({
-   *   async ready({ context }) {
-   *     await waitForPort(context.port)
+   *   url({ context }) {
+   *     return `http://localhost:${context.port}`
    *   }
    * })
    */
-  ready: (options: {
+  url: (options: {
     context: Context
     env: Record<string, string>
     appProcess: ChildProcessWithoutNullStreams
-  }) => Promise<void>
+  }) => Promise<string | URL>
 }
 
 export interface Launcher {
@@ -97,9 +98,9 @@ export function defineLauncher<Context>(
         ...(baseEnv || {}),
         ...(customEnv || {}),
       }
-
       const command = await options.command({ context, env })
 
+      // Spawn the application.
       const app = new AppProcess({
         command,
         env,
@@ -107,11 +108,16 @@ export function defineLauncher<Context>(
       })
       const childProcess = await app.launch()
 
-      await options.ready({
+      // Wait for the provided application URL to be up.
+      const url = await options.url({
         context,
         env,
         appProcess: childProcess,
       })
+      const resolvedUrl = url instanceof URL ? url : new URL(url)
+      app[kUrl] = resolvedUrl
+
+      await waitForPort(+resolvedUrl.port)
 
       return app
     },
