@@ -6,6 +6,7 @@
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
+    "dev": "npm run build -- --watch",
     "test": "vitest",
     "build": "tsc -p ./tsconfig.build.json",
     "release": "release publish"
