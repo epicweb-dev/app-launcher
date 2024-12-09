@@ -1,0 +1,31 @@
+{
+  "type": "module",
+  "name": "@epic-web/app-launcher",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "keywords": [
+    "launcher",
+    "app",
+    "test",
+    "rsc",
+    "utility",
+    "helper"
+  ],
+  "author": "Artem Zakharchenko <kettanaito@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "dependencies": {
+    "@open-draft/deferred-promise": "^2.2.0",
+    "@types/node": "18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
