@@ -1,0 +1,9 @@
+{
+  "profiles": [
+    {
+      "name": "latest",
+      "use": "npm publish",
+      "prerelease": true
+    }
+  ]
+}

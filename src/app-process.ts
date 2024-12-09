@@ -1,5 +1,6 @@
-import { ChildProcessWithoutNullStreams, spawn } from 'node:child_process'
+import { type ChildProcessWithoutNullStreams, spawn } from 'node:child_process'
 import { DeferredPromise } from '@open-draft/deferred-promise'
+import { invariant } from '@epic-web/invariant'
 
 export interface ProcessWrapOptions {
   command: string
@@ -8,7 +9,7 @@ export interface ProcessWrapOptions {
 }
 
 export class AppProcess {
-  private io: ChildProcessWithoutNullStreams
+  private io?: ChildProcessWithoutNullStreams
   private controller: AbortController
 
   constructor(protected readonly options: ProcessWrapOptions) {
@@ -16,11 +17,17 @@ export class AppProcess {
   }
 
   get url(): URL {
-    return new URL('')
+    const url = new URL('http://localhost')
+    return url
   }
 
   public async launch(): Promise<ChildProcessWithoutNullStreams> {
     const [command, ...args] = this.options.command.split(' ')
+
+    invariant(
+      command != null,
+      'Failed to launch application: "command" could not be parsed',
+    )
 
     this.io = spawn(command, args, {
       signal: this.controller.signal,
@@ -40,7 +47,12 @@ export class AppProcess {
     return this.io
   }
 
-  public async kill(): Promise<void> {
+  public async dispose(): Promise<void> {
+    invariant(
+      this.io != null,
+      'Failed to dispose of a launched application: application is not running. Did you forget to run `await launcher.run()`?',
+    )
+
     if (this.io.exitCode !== null) {
       return Promise.resolve()
     }
@@ -61,6 +73,6 @@ export class AppProcess {
   }
 
   async [Symbol.asyncDispose]() {
-    await this.kill()
+    await this.dispose()
   }
 }

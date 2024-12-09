@@ -2,11 +2,18 @@
   "type": "module",
   "name": "@epic-web/app-launcher",
   "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Utility for launching your applications on a per-test basis.",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "build": "tsc -p ./tsconfig.build.json",
+    "release": "release publish"
   },
+  "files": [
+    "./src",
+    "./build"
+  ],
   "keywords": [
     "launcher",
     "app",
@@ -18,10 +25,12 @@
   "author": "Artem Zakharchenko <kettanaito@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@ossjs/release": "^0.8.1",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   },
   "dependencies": {
+    "@epic-web/invariant": "^1.0.0",
     "@open-draft/deferred-promise": "^2.2.0",
     "@types/node": "18"
   },
