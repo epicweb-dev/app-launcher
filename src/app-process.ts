@@ -49,6 +49,11 @@ export class AppProcess {
 
   public async dispose(): Promise<void> {
     invariant(
+      !this.controller.signal.aborted,
+      'Failed to dispose of a launched application: already disposed',
+    )
+
+    invariant(
       this.io != null,
       'Failed to dispose of a launched application: application is not running. Did you forget to run `await launcher.run()`?',
     )
