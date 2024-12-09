@@ -1,6 +1,10 @@
-# App Launcher
+<h1 align="center">
 
-Utility for launching your applications on a per-test basis.
+🚀 [@epic-web/app-launcher](https://npm.im/@epic-web/app-launcher)
+
+</h1>
+
+<p align="center">Utility for launching your applications on a per-test basis.</p>
 
 ## Usage
 
@@ -111,3 +115,7 @@ const laundher = defineLauncher({
   },
 })
 ```
+
+## License
+
+MIT
