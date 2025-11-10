@@ -26,9 +26,9 @@
   "author": "Artem Zakharchenko <kettanaito@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "@ossjs/release": "^0.8.1",
-    "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "@ossjs/release": "^0.10.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
   },
   "dependencies": {
     "@epic-web/invariant": "^1.0.0",
