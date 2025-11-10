@@ -1,5 +1,5 @@
 import type { ChildProcess } from 'node:child_process'
-import { AppProcess, kUrl } from './app-process.js'
+import { AppProcess, kLaunch, kUrl } from './app-process.js'
 import { waitForPort } from './wait-for-port.js'
 
 export interface LauncherInit<Context, Env extends Record<string, string>> {
@@ -113,7 +113,7 @@ export function defineLauncher<
         env,
         cwd: runOptions?.cwd,
       })
-      const childProcess = await app.launch()
+      const childProcess = await app[kLaunch]()
 
       if (options?.debug) {
         childProcess.stdout?.pipe(process.stdout)
