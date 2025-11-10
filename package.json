@@ -27,13 +27,13 @@
   "license": "MIT",
   "devDependencies": {
     "@ossjs/release": "^0.10.0",
+    "@types/node": "^24.10.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.8"
   },
   "dependencies": {
     "@epic-web/invariant": "^1.0.0",
-    "@open-draft/deferred-promise": "^2.2.0",
-    "@types/node": "18"
+    "@open-draft/deferred-promise": "^2.2.0"
   },
   "publishConfig": {
     "access": "public"
