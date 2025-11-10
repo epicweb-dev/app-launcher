@@ -2,7 +2,7 @@ import type { ChildProcess } from 'node:child_process'
 import { AppProcess, kUrl } from './app-process.js'
 import { waitForPort } from './wait-for-port.js'
 
-export interface DefineLauncherOptions<Context> {
+export interface LauncherInit<Context, Env extends Record<string, string>> {
   /**
    * Provide a launcher to extend.
    * When extended, the base launcher options, like `env`,
@@ -39,9 +39,7 @@ export interface DefineLauncherOptions<Context> {
    *   }
    * })
    */
-  env?: (options: {
-    context: Context
-  }) => Record<string, string> | Promise<Record<string, string>>
+  env?: (options: { context: Context }) => Env | Promise<Env>
 
   /**
    * Define a command that runs your application.
@@ -53,10 +51,7 @@ export interface DefineLauncherOptions<Context> {
    *   }
    * })
    */
-  command: (options: {
-    context: Context
-    env: Record<string, string>
-  }) => string | Promise<string>
+  command: (options: { context: Context; env: Env }) => string | Promise<string>
 
   /**
    * Return the resolved application URL.
@@ -70,26 +65,30 @@ export interface DefineLauncherOptions<Context> {
    */
   url: (options: {
     context: Context
-    env: Record<string, string>
+    env: Env
     appProcess: ChildProcess
   }) => string | URL | Promise<string | URL>
 }
 
-export interface Launcher {
-  [kLauncherOptions]: DefineLauncherOptions<any>
+export interface Launcher<Context = any> {
+  [kLauncherOptions]: LauncherInit<Context, any>
 
-  run: (runOptions?: RunOptions) => Promise<AppProcess>
+  run: (runOptions?: RunOptions<Context>) => Promise<AppProcess>
 }
 
-export interface RunOptions {
+export interface RunOptions<Context = any> {
   cwd?: string
+  env?: (options: {
+    context: Context
+  }) => Record<string, string> | Promise<Record<string, string>>
 }
 
 export const kLauncherOptions = Symbol('kLauncherOptions')
 
-export function defineLauncher<Context>(
-  options: DefineLauncherOptions<Context>,
-): Launcher {
+export function defineLauncher<
+  Context,
+  Env extends Record<string, string> = {},
+>(options: LauncherInit<Context, Env>): Launcher<Context> {
   return {
     [kLauncherOptions]: options,
 
@@ -98,10 +97,13 @@ export function defineLauncher<Context>(
       const baseEnv = await options.extends?.[kLauncherOptions].env?.({
         context,
       })
-      const customEnv = await options.env?.({ context })
+      const launcherEnv = await options.env?.({ context })
+      const runEnv = await runOptions?.env?.({ context })
+
       const env = {
         ...(baseEnv || {}),
-        ...(customEnv || {}),
+        ...(launcherEnv || {}),
+        ...(runEnv || {}),
       }
       const command = await options.command({ context, env })
 
