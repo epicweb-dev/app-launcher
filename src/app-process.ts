@@ -9,6 +9,7 @@ export interface AppProcessOptions {
 }
 
 export const kUrl = Symbol('kUrl')
+export const kLaunch = Symbol('kLaunch')
 
 export class AppProcess {
   private io?: ChildProcess
@@ -30,7 +31,11 @@ export class AppProcess {
     return url
   }
 
-  public async launch(): Promise<ChildProcess> {
+  /**
+   * Spawns the child process with the configured application.
+   * @note This method must never be used publicly. Use `launcher.run()` instead.
+   */
+  async [kLaunch](): Promise<ChildProcess> {
     const [command, ...args] = this.options.command.split(' ')
 
     invariant(
@@ -56,6 +61,9 @@ export class AppProcess {
     return this.io
   }
 
+  /**
+   * Stop the running application.
+   */
   public async dispose(): Promise<void> {
     invariant(
       !this.controller.signal.aborted,
