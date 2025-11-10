@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@epic-web/app-launcher",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Utility for launching your applications on a per-test basis.",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
