@@ -13,12 +13,9 @@ export const kLaunch = Symbol('kLaunch')
 
 export class AppProcess {
   private io?: ChildProcess
-  private controller: AbortController
   private [kUrl]?: URL
 
-  constructor(protected readonly options: AppProcessOptions) {
-    this.controller = new AbortController()
-  }
+  constructor(protected readonly options: AppProcessOptions) {}
 
   get url(): URL {
     const url = this[kUrl]
@@ -44,7 +41,6 @@ export class AppProcess {
     )
 
     this.io = spawn(command, args, {
-      signal: this.controller.signal,
       cwd: this.options.cwd,
       env: {
         ...process.env,
@@ -66,17 +62,13 @@ export class AppProcess {
    */
   public async dispose(): Promise<void> {
     invariant(
-      !this.controller.signal.aborted,
-      'Failed to dispose of a launched application: already disposed',
-    )
-
-    invariant(
       this.io != null,
       'Failed to dispose of a launched application: application is not running. Did you forget to run `await launcher.run()`?',
     )
 
+    // The application has been exited by other means (e.g. unhandled exception).
     if (this.io.exitCode !== null) {
-      return Promise.resolve()
+      return
     }
 
     const exitPromise = new DeferredPromise<void>()
@@ -90,7 +82,10 @@ export class AppProcess {
       exitPromise.reject(new Error(`Process exited with code ${exitCode}`))
     })
 
-    this.controller.abort()
+    if (!this.io.kill('SIGTERM')) {
+      exitPromise.reject('SIGTERM did not succeed')
+    }
+
     await exitPromise
   }
 
