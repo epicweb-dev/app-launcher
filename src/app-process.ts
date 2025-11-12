@@ -82,8 +82,8 @@ export class AppProcess {
       exitPromise.reject(new Error(`Process exited with code ${exitCode}`))
     })
 
-    if (!this.io.kill('SIGTERM')) {
-      exitPromise.reject('SIGTERM did not succeed')
+    if (!this.io.kill('SIGINT')) {
+      exitPromise.reject('SIGINT did not succeed')
     }
 
     await exitPromise
